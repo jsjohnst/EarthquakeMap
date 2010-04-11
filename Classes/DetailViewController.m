@@ -8,7 +8,8 @@
 
 #import "DetailViewController.h"
 #import "RootViewController.h"
-
+#import "Earthquake.h"
+#import "EarthquakeLocationAnnotation.h"
 
 @interface DetailViewController ()
 @property (nonatomic, retain) UIPopoverController *popoverController;
@@ -19,7 +20,7 @@
 
 @implementation DetailViewController
 
-@synthesize toolbar, popoverController, detailItem, detailDescriptionLabel;
+@synthesize toolbar, popoverController, detailItem, magnitudeLabel, locationLabel, dateLabel, USGSWebLinkLabel, latitudeLabel, longitudeLabel;
 
 #pragma mark -
 #pragma mark Managing the detail item
@@ -42,9 +43,46 @@
 }
 
 
+-(CLLocationCoordinate2D) earthquakeLocation {
+	
+		Earthquake *earthquake = detailItem;
+
+    CLLocationCoordinate2D location;
+    location.latitude = earthquake.latitude;
+    location.longitude = earthquake.longitude;
+	
+    return location;
+}
+
 - (void)configureView {
     // Update the user interface for the detail item.
-    detailDescriptionLabel.text = [detailItem description];   
+	Earthquake *earthquake = detailItem;
+
+	locationLabel.text = earthquake.location;
+	dateLabel.text = [NSString stringWithFormat:@"%d", earthquake.date];
+	USGSWebLinkLabel.text = earthquake.USGSWebLink;
+	
+	MKCoordinateRegion region;
+	MKCoordinateSpan span;
+	
+	span.latitudeDelta=0.2;
+	span.longitudeDelta=0.2;
+	
+	CLLocationCoordinate2D location = [self earthquakeLocation];
+	
+	region.span = span;
+	region.center = location;
+	
+	EarthquakeLocationAnnotation *addAnnotation = [[EarthquakeLocationAnnotation alloc] initWithCoordinate:location];
+	
+	[mapView addAnnotation:addAnnotation];
+	[mapView setRegion:region animated:TRUE];
+	[mapView regionThatFits:region];
+	
+	
+//	latitudeLabel.text = [NSString stringWithFormat:@"%d", earthquake.latitude];
+//	longitudeLabel.text = [NSString stringWithFormat:@"%d", earthquake.longitude];
+//	magnitudeLabel.text = [NSString stringWithFormat:@"%d", earthquake.magnitude];
 }
 
 
@@ -137,7 +175,14 @@
     [toolbar release];
     
     [detailItem release];
-    [detailDescriptionLabel release];
+	
+    [magnitudeLabel release];
+	[locationLabel release];
+	[dateLabel release];
+	[USGSWebLinkLabel release];
+	[latitudeLabel release];
+	[longitudeLabel release];
+	
     [super dealloc];
 }
 

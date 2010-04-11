@@ -8,7 +8,6 @@
 
 #import "RootViewController.h"
 #import "DetailViewController.h"
-#import "EQMapAppDelegate.h"
 #import "Earthquake.h"
 
 
@@ -43,20 +42,8 @@
     return dateFormatter;
 }
 
-- (UIImage *)imageForMagnitude:(CGFloat)magnitude {	
-	if (magnitude >= 5.0) {
-		return [UIImage imageNamed:@"5.0.png"];
-	}
-	if (magnitude >= 4.0) {
-		return [UIImage imageNamed:@"4.0.png"];
-	}
-	if (magnitude >= 3.0) {
-		return [UIImage imageNamed:@"3.0.png"];
-	}
-	if (magnitude >= 2.0) {
-		return [UIImage imageNamed:@"2.0.png"];
-	}
-	return nil;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)aTableView {
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -68,13 +55,11 @@
     static NSUInteger const kLocationLabelTag = 2;
     static NSUInteger const kDateLabelTag = 3;
     static NSUInteger const kMagnitudeLabelTag = 4;
-    static NSUInteger const kMagnitudeImageTag = 5;
     
     // Declare references to the subviews which will display the earthquake data.
     UILabel *locationLabel = nil;
     UILabel *dateLabel = nil;
     UILabel *magnitudeLabel = nil;
-    UIImageView *magnitudeImage = nil;
     
 	static NSString *kEarthquakeCellID = @"EarthquakeCellID";    
   	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEarthquakeCellID];
@@ -98,20 +83,12 @@
         magnitudeLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         [cell.contentView addSubview:magnitudeLabel];
         
-        magnitudeImage = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"5.0.png"]] autorelease];
-        CGRect imageFrame = magnitudeImage.frame;
-        imageFrame.origin = CGPointMake(180, 2);
-        magnitudeImage.frame = imageFrame;
-        magnitudeImage.tag = kMagnitudeImageTag;
-        magnitudeImage.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-        [cell.contentView addSubview:magnitudeImage];
-    } else {
-        // A reusable cell was available, so we just need to get a reference to the subviews using their tags.
-        locationLabel = (UILabel *)[cell.contentView viewWithTag:kLocationLabelTag];
-        dateLabel = (UILabel *)[cell.contentView viewWithTag:kDateLabelTag];
-        magnitudeLabel = (UILabel *)[cell.contentView viewWithTag:kMagnitudeLabelTag];
-        magnitudeImage = (UIImageView *)[cell.contentView viewWithTag:kMagnitudeImageTag];
-    }
+    } //else {
+//        // A reusable cell was available, so we just need to get a reference to the subviews using their tags.
+//        locationLabel = (UILabel *)[cell.contentView viewWithTag:kLocationLabelTag];
+//        dateLabel = (UILabel *)[cell.contentView viewWithTag:kDateLabelTag];
+//        magnitudeLabel = (UILabel *)[cell.contentView viewWithTag:kMagnitudeLabelTag];
+//    }
     
     // Get the specific earthquake for this row.
 	Earthquake *earthquake = [earthquakeList objectAtIndex:indexPath.row];
@@ -120,40 +97,14 @@
     locationLabel.text = earthquake.location;
     dateLabel.text = [self.dateFormatter stringFromDate:earthquake.date];
     magnitudeLabel.text = [NSString stringWithFormat:@"%.1f", earthquake.magnitude];
-    magnitudeImage.image = [self imageForMagnitude:earthquake.magnitude];
 	
 	return cell;
 }
 
 // When the user taps a row in the table, display the USGS web page that displays details of the earthquake they selected.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {	
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"External App Sheet Title", @"Title for sheet displayed with options for displaying Earthquake data in other applications") delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Show USGS Site in Safari", @"Show USGS Site in Safari"), NSLocalizedString(@"Show Location in Maps", @"Show Location in Maps"), nil];
-    [sheet showInView:self.view];
-    [sheet release];
+	detailViewController.detailItem = [self.earthquakeList objectAtIndex: indexPath.row];
 }
-
-// Called when the user selects an option in the sheet. The sheet will automatically be dismissed.
-- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
-    Earthquake *earthquake = (Earthquake *)[earthquakeList objectAtIndex:selectedIndexPath.row];
-    switch (buttonIndex) {
-        case 0: {
-            NSString *webLink = [earthquake USGSWebLink];
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:webLink]];
-        } break;
-        case 1: {
-            static NSString * const kMapsBaseURL = @"http://maps.google.com/maps?";
-            NSString *mapsQuery = [NSString stringWithFormat:@"z=6&t=h&ll=%f,%f", earthquake.latitude, earthquake.longitude];
-            mapsQuery = [mapsQuery stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            NSString *mapsURLString = [kMapsBaseURL stringByAppendingString:mapsQuery];
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:mapsURLString]];
-        } break;
-        default:
-            break;
-    }
-    [self.tableView deselectRowAtIndexPath:selectedIndexPath animated:YES];
-}
-
 
 
 #pragma mark -

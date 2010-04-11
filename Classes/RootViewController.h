@@ -10,7 +10,7 @@
 
 @class DetailViewController;
 
-@interface RootViewController : UITableViewController <UIActionSheetDelegate> {
+@interface RootViewController : UITableViewController {
     DetailViewController *detailViewController;
 	
 	NSArray *earthquakeList;
