@@ -39,7 +39,7 @@
 	
 	[window addSubview:splitViewController.view];
 	
-    self.earthquakeList = [[NSMutableArray array] retain];
+    self.earthquakeList = [NSMutableArray array];
     rootViewController.earthquakeList = earthquakeList;
 
 	NSLog(@"loading data");
@@ -72,7 +72,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;   
     if ([error code] == kCFURLErrorNotConnectedToInternet) {
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"No Connection Error",                             @"Error message displayed when not connected to the Internet.") forKey:NSLocalizedDescriptionKey];
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"No Connection Error", @"Error message displayed when not connected to the Internet.") forKey:NSLocalizedDescriptionKey];
         NSError *noConnectionError = [NSError errorWithDomain:NSCocoaErrorDomain code:kCFURLErrorNotConnectedToInternet userInfo:userInfo];
         [self handleError:noConnectionError];
     } else {

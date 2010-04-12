@@ -22,7 +22,7 @@
 @property (nonatomic, assign) CGFloat magnitude;
 @property (nonatomic, retain) NSString *location;
 @property (nonatomic, retain) NSDate *date;
-@property (nonatomic, assign) NSString *USGSWebLink;
+@property (nonatomic, retain) NSString *USGSWebLink;
 @property (nonatomic, assign) double latitude;
 @property (nonatomic, assign) double longitude;
 

@@ -106,13 +106,15 @@
 ////		[earthquakeAnnotation release];
 //	}
 	
-	earthquakeAnnotation = [[EarthquakeLocationAnnotation alloc] initWithCoordinate: earthquakeLocation];
+	earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: earthquakeLocation] autorelease];
 	[earthquakeAnnotation setMTitle:detailItem.location];
-//	[earthquakeAnnotation setMSubTitle:[NSString stringWithFormat:@"%.1f", detailItem.magnitude]];
+	[earthquakeAnnotation setMSubTitle:[NSString stringWithFormat:@"%.1f", detailItem.magnitude]];
 	
 	[mapView addAnnotation:earthquakeAnnotation];
 	[mapView setRegion:region animated:TRUE];
 	[mapView regionThatFits:region];
+	
+	[earthquakeAnnotation release];
 }
 
 
@@ -127,7 +129,7 @@
     NSMutableArray *items = [[toolbar items] mutableCopy];
     [items insertObject:barButtonItem atIndex:0];
     [toolbar setItems:items animated:YES];
-    //[items release];
+    [items release];
     self.popoverController = pc;
 }
 
@@ -138,7 +140,7 @@
     NSMutableArray *items = [[toolbar items] mutableCopy];
     [items removeObjectAtIndex:0];
     [toolbar setItems:items animated:YES];
-    //[items release];
+    [items release];
     self.popoverController = nil;
 }
 

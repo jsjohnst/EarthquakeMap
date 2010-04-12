@@ -18,11 +18,11 @@
 @synthesize latitude;
 @synthesize longitude;
 
-- (void) dealloc {
+//- (void) dealloc {
 //	[location release];
 //	[date release];
 //	[USGSWebLink release];
 //	[super dealloc];
-}
+//}
 
 @end

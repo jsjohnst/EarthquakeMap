@@ -102,7 +102,7 @@
 
 // When the user taps a row in the table, display the USGS web page that displays details of the earthquake they selected.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {	
-	detailViewController.detailItem = [[self.earthquakeList objectAtIndex: indexPath.row] autorelease];
+	detailViewController.detailItem = [self.earthquakeList objectAtIndex: indexPath.row];
 }
 
 
