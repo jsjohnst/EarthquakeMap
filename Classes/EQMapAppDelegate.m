@@ -38,32 +38,19 @@
 	NSLog(@"at applicationDidFinshishLaunching");
 	
 	[window addSubview:splitViewController.view];
-//	[window makeKeyAndVisible];
 	
-    // Initialize the array of earthquakes and pass a reference to that list to the Root view controller.
-    self.earthquakeList = [NSMutableArray array];
+    self.earthquakeList = [[NSMutableArray array] retain];
     rootViewController.earthquakeList = earthquakeList;
-    // Add the navigation view controller to the window.
-    //[window addSubview:navigationController.view];
-    
-    // Use NSURLConnection to asynchronously download the data. This means the main thread will not be blocked - the
-    // application will remain responsive to the user. 
-    //
-    // IMPORTANT! The main thread of the application should never be blocked! Also, avoid synchronous network access on any thread.
-    //
+
 	NSLog(@"loading data");
     static NSString *feedURLString = @"http://earthquake.usgs.gov/eqcenter/catalogs/7day-M2.5.xml";
     NSURLRequest *earthquakeURLRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:feedURLString]];
     self.earthquakeFeedConnection = [[[NSURLConnection alloc] initWithRequest:earthquakeURLRequest delegate:self] autorelease];
     
-    // Test the validity of the connection object. The most likely reason for the connection object to be nil is a malformed
-    // URL, which is a programmatic error easily detected during development. If the URL is more dynamic, then you should
-    // implement a more flexible validation technique, and be able to both recover from errors and communicate problems
-    // to the user in an unobtrusive manner.
     NSAssert(self.earthquakeFeedConnection != nil, @"Failure to create URL connection.");
     
-    // Start the status bar network activity indicator. We'll turn it off when the connection finishes or experiences an error.
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+	
 }
 
 
@@ -130,6 +117,7 @@
 - (void)addEarthquakesToList:(NSArray *)earthquakes {
     [self.earthquakeList addObjectsFromArray:earthquakes];
     [rootViewController.tableView reloadData];
+	[detailViewController loadAllEarthQuakes:earthquakeList];
 }
 
 
@@ -153,9 +141,9 @@ static NSString * const kGeoRSSPointElementName = @"georss:point";
         [parser abortParsing];
     }
     if ([elementName isEqualToString:kEntryElementName]) {
-        Earthquake *earthquake = [[Earthquake alloc] init];
+        Earthquake *earthquake = [[[Earthquake alloc] init] autorelease];
         self.currentEarthquakeObject = earthquake;
-        [earthquake release];
+        //[earthquake release];
     } else if ([elementName isEqualToString:kLinkElementName]) {
         NSString *relAttribute = [attributeDict valueForKey:@"rel"];
         if ([relAttribute isEqualToString:@"alternate"]) {
@@ -219,16 +207,16 @@ static NSString * const kGeoRSSPointElementName = @"georss:point";
 
 - (void)dealloc {
 	
-	[earthquakeFeedConnection release];
-    [earthquakeData release];
-    [earthquakeList release];
-    [currentEarthquakeObject release];
-    [currentParsedCharacterData release];
-    [currentParseBatch release];
-	
-	
-    [splitViewController release];
-    [window release];
+//	[earthquakeFeedConnection release];
+//    [earthquakeData release];
+//    [earthquakeList release];
+//    [currentEarthquakeObject release];
+//    [currentParsedCharacterData release];
+//    [currentParseBatch release];
+//	
+//	
+//    [splitViewController release];
+//    [window release];
     [super dealloc];
 }
 

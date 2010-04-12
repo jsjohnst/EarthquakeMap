@@ -19,10 +19,10 @@
 @synthesize longitude;
 
 - (void) dealloc {
-	[location release];
-	[date release];
-	[USGSWebLink release];
-	[super dealloc];
+//	[location release];
+//	[date release];
+//	[USGSWebLink release];
+//	[super dealloc];
 }
 
 @end

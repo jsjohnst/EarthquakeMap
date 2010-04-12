@@ -12,18 +12,20 @@
 @implementation EarthquakeLocationAnnotation
 
 @synthesize coordinate;
+@synthesize mTitle;
+@synthesize mSubTitle;
 
 - (NSString *)subtitle{
-	return @"Sub Title";
+	return mSubTitle;
 }
 
 - (NSString *)title{
-	return @"title";
+	return mTitle;
 }
 
 -(id) initWithCoordinate:(CLLocationCoordinate2D) c{
-	coordinate=c;
-	NSLog(@"%f%f", c.latitude, c.longitude);
+	coordinate = c;
+	//NSLog(@"%f%f", c.latitude, c.longitude);
 	return self;
 }
 

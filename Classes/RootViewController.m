@@ -25,7 +25,6 @@
 	self.tableView.rowHeight = 48.0;
     self.clearsSelectionOnViewWillAppear = NO;
     self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
-	
 }
 
 
@@ -65,6 +64,7 @@
   	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEarthquakeCellID];
 	if (cell == nil) {
         // No reusable cell was available, so we create a new cell and configure its subviews.
+		
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kEarthquakeCellID] autorelease];
         
         locationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10, 3, 190, 20)] autorelease];
@@ -83,12 +83,11 @@
         magnitudeLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         [cell.contentView addSubview:magnitudeLabel];
         
-    } //else {
-//        // A reusable cell was available, so we just need to get a reference to the subviews using their tags.
-//        locationLabel = (UILabel *)[cell.contentView viewWithTag:kLocationLabelTag];
-//        dateLabel = (UILabel *)[cell.contentView viewWithTag:kDateLabelTag];
-//        magnitudeLabel = (UILabel *)[cell.contentView viewWithTag:kMagnitudeLabelTag];
-//    }
+    } else {
+		locationLabel = (UILabel *)[cell.contentView viewWithTag:kLocationLabelTag];
+        dateLabel = (UILabel *)[cell.contentView viewWithTag:kDateLabelTag];
+        magnitudeLabel = (UILabel *)[cell.contentView viewWithTag:kMagnitudeLabelTag];
+	}
     
     // Get the specific earthquake for this row.
 	Earthquake *earthquake = [earthquakeList objectAtIndex:indexPath.row];
@@ -103,7 +102,7 @@
 
 // When the user taps a row in the table, display the USGS web page that displays details of the earthquake they selected.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {	
-	detailViewController.detailItem = [self.earthquakeList objectAtIndex: indexPath.row];
+	detailViewController.detailItem = [[self.earthquakeList objectAtIndex: indexPath.row] autorelease];
 }
 
 
@@ -119,9 +118,9 @@
 
 
 - (void)dealloc {
-	[earthquakeList release];
-	[dateFormatter release];
-    [detailViewController release];
+//	[earthquakeList release];
+//	[dateFormatter release];
+//    [detailViewController release];
     [super dealloc];
 }
 

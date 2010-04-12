@@ -12,6 +12,7 @@
 #import "EarthquakeLocationAnnotation.h"
 
 @interface DetailViewController ()
+
 @property (nonatomic, retain) UIPopoverController *popoverController;
 - (void)configureView;
 @end
@@ -20,10 +21,40 @@
 
 @implementation DetailViewController
 
-@synthesize toolbar, popoverController, detailItem, magnitudeLabel, locationLabel, dateLabel, USGSWebLinkLabel, latitudeLabel, longitudeLabel;
+@synthesize toolbar, popoverController, detailItem;
 
 #pragma mark -
 #pragma mark Managing the detail item
+
+- (void) loadAllEarthQuakes:(NSArray *) earthquakeList {
+	
+	EarthquakeLocationAnnotation *earthquakeAnnotation;
+	
+	for (Earthquake *earthquake in earthquakeList) {
+		
+		MKCoordinateRegion region;
+		MKCoordinateSpan span;
+		
+		span.latitudeDelta=0.5;
+		span.longitudeDelta=0.5;
+		
+		CLLocationCoordinate2D location;
+		location.latitude = earthquake.latitude;
+		location.longitude = earthquake.longitude;
+	
+		
+		region.span = span;
+		region.center = location;
+		
+		
+	    earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: location] autorelease];
+		[earthquakeAnnotation setMTitle:detailItem.location];
+		[earthquakeAnnotation setMSubTitle:[NSString stringWithFormat:@"%.1f", detailItem.magnitude]];
+		
+		[mapView addAnnotation:earthquakeAnnotation];
+	}
+	
+}
 
 /*
  When setting the detail item, update the view and dismiss the popover controller if it's showing.
@@ -45,45 +76,46 @@
 
 -(CLLocationCoordinate2D) earthquakeLocation {
 	
-		Earthquake *earthquake = detailItem;
-
     CLLocationCoordinate2D location;
-    location.latitude = earthquake.latitude;
-    location.longitude = earthquake.longitude;
+    location.latitude = detailItem.latitude;
+    location.longitude = detailItem.longitude;
 	
     return location;
 }
 
 - (void)configureView {
-    // Update the user interface for the detail item.
-	Earthquake *earthquake = detailItem;
-
-	locationLabel.text = earthquake.location;
-	dateLabel.text = [NSString stringWithFormat:@"%d", earthquake.date];
-	USGSWebLinkLabel.text = earthquake.USGSWebLink;
 	
+	[mapView removeAnnotations:mapView.annotations];
+
+	EarthquakeLocationAnnotation *earthquakeAnnotation;
+
 	MKCoordinateRegion region;
 	MKCoordinateSpan span;
 	
-	span.latitudeDelta=0.2;
-	span.longitudeDelta=0.2;
+	span.latitudeDelta=0.5;
+	span.longitudeDelta=0.5;
 	
-	CLLocationCoordinate2D location = [self earthquakeLocation];
+	CLLocationCoordinate2D earthquakeLocation = [self earthquakeLocation];
 	
 	region.span = span;
-	region.center = location;
+	region.center = earthquakeLocation;
 	
-	EarthquakeLocationAnnotation *addAnnotation = [[EarthquakeLocationAnnotation alloc] initWithCoordinate:location];
+//	if(earthquakeAnnotation != nil) {
+////		[mapView removeAnnotation:earthquakeAnnotation];
+//		NSLog(@"got here");
+////		[earthquakeAnnotation release];
+//	}
 	
-	[mapView addAnnotation:addAnnotation];
+	earthquakeAnnotation = [[EarthquakeLocationAnnotation alloc] initWithCoordinate: earthquakeLocation];
+	[earthquakeAnnotation setMTitle:detailItem.location];
+//	[earthquakeAnnotation setMSubTitle:[NSString stringWithFormat:@"%.1f", detailItem.magnitude]];
+	
+	[mapView addAnnotation:earthquakeAnnotation];
 	[mapView setRegion:region animated:TRUE];
 	[mapView regionThatFits:region];
-	
-	
-//	latitudeLabel.text = [NSString stringWithFormat:@"%d", earthquake.latitude];
-//	longitudeLabel.text = [NSString stringWithFormat:@"%d", earthquake.longitude];
-//	magnitudeLabel.text = [NSString stringWithFormat:@"%d", earthquake.magnitude];
 }
+
+
 
 
 #pragma mark -
@@ -95,7 +127,7 @@
     NSMutableArray *items = [[toolbar items] mutableCopy];
     [items insertObject:barButtonItem atIndex:0];
     [toolbar setItems:items animated:YES];
-    [items release];
+    //[items release];
     self.popoverController = pc;
 }
 
@@ -106,7 +138,7 @@
     NSMutableArray *items = [[toolbar items] mutableCopy];
     [items removeObjectAtIndex:0];
     [toolbar setItems:items animated:YES];
-    [items release];
+    //[items release];
     self.popoverController = nil;
 }
 
@@ -123,33 +155,11 @@
 #pragma mark -
 #pragma mark View lifecycle
 
-/*
- // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
- - (void)viewDidLoad {
- [super viewDidLoad];
- }
- */
 
-/*
- - (void)viewWillAppear:(BOOL)animated {
- [super viewWillAppear:animated];
- }
- */
-/*
- - (void)viewDidAppear:(BOOL)animated {
- [super viewDidAppear:animated];
- }
- */
-/*
- - (void)viewWillDisappear:(BOOL)animated {
- [super viewWillDisappear:animated];
- }
- */
-/*
- - (void)viewDidDisappear:(BOOL)animated {
- [super viewDidDisappear:animated];
- }
- */
+ // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
+// - (void)viewDidLoad {
+//	 [super viewDidLoad];
+// }
 
 - (void)viewDidUnload {
     // Release any retained subviews of the main view.
@@ -171,17 +181,12 @@
  */
 
 - (void)dealloc {
-    [popoverController release];
-    [toolbar release];
-    
-    [detailItem release];
-	
-    [magnitudeLabel release];
-	[locationLabel release];
-	[dateLabel release];
-	[USGSWebLinkLabel release];
-	[latitudeLabel release];
-	[longitudeLabel release];
+//    [popoverController release];
+//    [toolbar release];
+//    
+//    [detailItem release];
+//	
+//	[mapView release];
 	
     [super dealloc];
 }

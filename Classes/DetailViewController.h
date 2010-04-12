@@ -8,34 +8,22 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
+#import "Earthquake.h"
 
 @interface DetailViewController : UIViewController <UIPopoverControllerDelegate, UISplitViewControllerDelegate, MKMapViewDelegate> {
     
     UIPopoverController *popoverController;
     UIToolbar *toolbar;
     
-    id detailItem;
-	
-    UILabel *magnitudeLabel;
-	UILabel *locationLabel;
-	UILabel *dateLabel;
-	UILabel *USGSWebLinkLabel;
-	UILabel *latitudeLabel;
-	UILabel *longitudeLabel;
+    Earthquake *detailItem;
 	
 	IBOutlet MKMapView *mapView;
 	
 }
 
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, retain) Earthquake *detailItem;
 
-@property (nonatomic, retain) id detailItem;
-
-@property (nonatomic, retain) IBOutlet UILabel *magnitudeLabel;
-@property (nonatomic, retain) IBOutlet UILabel *locationLabel;
-@property (nonatomic, retain) IBOutlet UILabel *dateLabel;
-@property (nonatomic, retain) IBOutlet UILabel *USGSWebLinkLabel;
-@property (nonatomic, retain) IBOutlet UILabel *latitudeLabel;
-@property (nonatomic, retain) IBOutlet UILabel *longitudeLabel;
+- (void) loadAllEarthQuakes:(NSArray *) earthquakeList;
 
 @end
