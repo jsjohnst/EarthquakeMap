@@ -1,19 +1,7 @@
-//
-//  EQMapAppDelegate.m
-//  EQMap
-//
-//  Created by Matt Christiansen on 4/10/10.
-//  Copyright Cal Poly Pomona 2010. All rights reserved.
-//
-
 #import "EQMapAppDelegate.h"
-
-
 #import "RootViewController.h"
 #import "DetailViewController.h"
-
 #import "Earthquake.h"
-
 #import <CFNetwork/CFNetwork.h>
 
 
@@ -35,15 +23,13 @@
 #pragma mark Application lifecycle
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
-	NSLog(@"at applicationDidFinshishLaunching");
-	
+
 	[window addSubview:splitViewController.view];
 	
     self.earthquakeList = [NSMutableArray array];
     rootViewController.earthquakeList = earthquakeList;
 
-	NSLog(@"loading data");
-    static NSString *feedURLString = @"http://earthquake.usgs.gov/eqcenter/catalogs/7day-M2.5.xml";
+	static NSString *feedURLString = @"http://earthquake.usgs.gov/eqcenter/catalogs/7day-M2.5.xml";
     NSURLRequest *earthquakeURLRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:feedURLString]];
     self.earthquakeFeedConnection = [[[NSURLConnection alloc] initWithRequest:earthquakeURLRequest delegate:self] autorelease];
     
@@ -143,7 +129,6 @@ static NSString * const kGeoRSSPointElementName = @"georss:point";
     if ([elementName isEqualToString:kEntryElementName]) {
         Earthquake *earthquake = [[[Earthquake alloc] init] autorelease];
         self.currentEarthquakeObject = earthquake;
-        //[earthquake release];
     } else if ([elementName isEqualToString:kLinkElementName]) {
         NSString *relAttribute = [attributeDict valueForKey:@"rel"];
         if ([relAttribute isEqualToString:@"alternate"]) {
@@ -207,16 +192,16 @@ static NSString * const kGeoRSSPointElementName = @"georss:point";
 
 - (void)dealloc {
 	
-//	[earthquakeFeedConnection release];
-//    [earthquakeData release];
-//    [earthquakeList release];
-//    [currentEarthquakeObject release];
-//    [currentParsedCharacterData release];
-//    [currentParseBatch release];
-//	
-//	
-//    [splitViewController release];
-//    [window release];
+	[earthquakeFeedConnection release];
+    [earthquakeData release];
+    [earthquakeList release];
+    [currentEarthquakeObject release];
+    [currentParsedCharacterData release];
+    [currentParseBatch release];
+	
+	
+    [splitViewController release];
+    [window release];
     [super dealloc];
 }
 

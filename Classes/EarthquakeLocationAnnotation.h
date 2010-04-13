@@ -1,11 +1,3 @@
-//
-//  EarthquakeLocationAnnotation.h
-//  EQMap
-//
-//  Created by Matt Christiansen on 4/10/10.
-//  Copyright 2010 Cal Poly Pomona. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 

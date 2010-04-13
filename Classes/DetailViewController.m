@@ -1,15 +1,8 @@
-//
-//  DetailViewController.m
-//  asdf
-//
-//  Created by Matt Christiansen on 4/10/10.
-//  Copyright Cal Poly Pomona 2010. All rights reserved.
-//
-
 #import "DetailViewController.h"
 #import "RootViewController.h"
 #import "Earthquake.h"
 #import "EarthquakeLocationAnnotation.h"
+#import "EarthquakeLocation.h"
 
 @interface DetailViewController ()
 
@@ -27,27 +20,13 @@
 #pragma mark Managing the detail item
 
 - (void) loadAllEarthQuakes:(NSArray *) earthquakeList {
-	
-	EarthquakeLocationAnnotation *earthquakeAnnotation;
-	
+
 	for (Earthquake *earthquake in earthquakeList) {
-		
-		MKCoordinateRegion region;
-		MKCoordinateSpan span;
-		
-		span.latitudeDelta=0.5;
-		span.longitudeDelta=0.5;
-		
-		CLLocationCoordinate2D location;
-		location.latitude = earthquake.latitude;
-		location.longitude = earthquake.longitude;
 	
 		
-		region.span = span;
-		region.center = location;
+		EarthquakeLocation *earthquakeLocation = [[[EarthquakeLocation alloc] initWithLatitude:earthquake.latitude andLongitude:earthquake.longitude] autorelease];
 		
-		
-	    earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: location] autorelease];
+	    EarthquakeLocationAnnotation *earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: earthquakeLocation.location] autorelease];
 		[earthquakeAnnotation setMTitle:detailItem.location];
 		[earthquakeAnnotation setMSubTitle:[NSString stringWithFormat:@"%.1f", detailItem.magnitude]];
 		
@@ -85,36 +64,27 @@
 
 - (void)configureView {
 	
+	// remove all previous annotations. 
 	[mapView removeAnnotations:mapView.annotations];
-
-	EarthquakeLocationAnnotation *earthquakeAnnotation;
 
 	MKCoordinateRegion region;
 	MKCoordinateSpan span;
 	
 	span.latitudeDelta=0.5;
 	span.longitudeDelta=0.5;
-	
-	CLLocationCoordinate2D earthquakeLocation = [self earthquakeLocation];
+
+	EarthquakeLocation *earthquakeLocation = [[[EarthquakeLocation alloc] initWithLatitude:detailItem.latitude andLongitude:detailItem.longitude] autorelease];
 	
 	region.span = span;
-	region.center = earthquakeLocation;
+	region.center = earthquakeLocation.location;
 	
-//	if(earthquakeAnnotation != nil) {
-////		[mapView removeAnnotation:earthquakeAnnotation];
-//		NSLog(@"got here");
-////		[earthquakeAnnotation release];
-//	}
-	
-	earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: earthquakeLocation] autorelease];
+	EarthquakeLocationAnnotation *earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: earthquakeLocation.location] autorelease];
 	[earthquakeAnnotation setMTitle:detailItem.location];
 	[earthquakeAnnotation setMSubTitle:[NSString stringWithFormat:@"%.1f", detailItem.magnitude]];
 	
 	[mapView addAnnotation:earthquakeAnnotation];
 	[mapView setRegion:region animated:TRUE];
 	[mapView regionThatFits:region];
-	
-	[earthquakeAnnotation release];
 }
 
 
@@ -125,7 +95,7 @@
 
 - (void)splitViewController: (UISplitViewController*)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem*)barButtonItem forPopoverController: (UIPopoverController*)pc {
     
-    barButtonItem.title = @"Root List";
+    barButtonItem.title = @"Earthquake List";
     NSMutableArray *items = [[toolbar items] mutableCopy];
     [items insertObject:barButtonItem atIndex:0];
     [toolbar setItems:items animated:YES];
@@ -183,12 +153,10 @@
  */
 
 - (void)dealloc {
-//    [popoverController release];
-//    [toolbar release];
-//    
-//    [detailItem release];
-//	
-//	[mapView release];
+    [popoverController release];
+    [toolbar release];
+    [detailItem release];	
+	[mapView release];
 	
     [super dealloc];
 }

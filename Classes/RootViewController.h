@@ -1,11 +1,3 @@
-//
-//  RootViewController.h
-//  EQMap
-//
-//  Created by Matt Christiansen on 4/10/10.
-//  Copyright Cal Poly Pomona 2010. All rights reserved.
-//
-
 #import <UIKit/UIKit.h>
 
 @class DetailViewController;

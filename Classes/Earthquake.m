@@ -1,11 +1,3 @@
-//
-//  Earthquake.m
-//  EQMap
-//
-//  Created by Matt Christiansen on 4/10/10.
-//  Copyright 2010 Cal Poly Pomona. All rights reserved.
-//
-
 #import "Earthquake.h"
 
 
@@ -18,11 +10,11 @@
 @synthesize latitude;
 @synthesize longitude;
 
-//- (void) dealloc {
-//	[location release];
-//	[date release];
-//	[USGSWebLink release];
-//	[super dealloc];
-//}
+- (void) dealloc {
+	[location release];
+	[date release];
+	[USGSWebLink release];
+	[super dealloc];
+}
 
 @end
