@@ -4,13 +4,13 @@
 @interface EarthquakeLocationAnnotation : NSObject<MKAnnotation> {
 	CLLocationCoordinate2D coordinate;
 	
-	NSString *mTitle;
-	NSString *mSubTitle;
+	NSString *title;
+	NSString *subtitle;
 }
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
-@property (nonatomic, retain) NSString *mTitle;
-@property (nonatomic, retain) NSString *mSubTitle;
+@property (nonatomic, retain) NSString *title;
+@property (nonatomic, retain) NSString *subtitle;
 
 - (id) initWithCoordinate:(CLLocationCoordinate2D) c;	
 

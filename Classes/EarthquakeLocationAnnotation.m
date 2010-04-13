@@ -4,16 +4,8 @@
 @implementation EarthquakeLocationAnnotation
 
 @synthesize coordinate;
-@synthesize mTitle;
-@synthesize mSubTitle;
-
-- (NSString *)subtitle{
-	return mSubTitle;
-}
-
-- (NSString *)title{
-	return mTitle;
-}
+@synthesize title;
+@synthesize subtitle;
 
 -(id) initWithCoordinate:(CLLocationCoordinate2D) c{
 	coordinate = c;
@@ -22,8 +14,8 @@
 }
 
 - (void) dealloc {
-	[mTitle release];
-	[mSubTitle release];
+	[title release];
+	[subtitle release];
 	[super dealloc];
 }
 @end

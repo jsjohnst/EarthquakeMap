@@ -102,14 +102,17 @@
 
 - (void)addEarthquakesToList:(NSArray *)earthquakes {
     [self.earthquakeList addObjectsFromArray:earthquakes];
-    [rootViewController.tableView reloadData];
-	[detailViewController loadAllEarthQuakes:earthquakeList];
+	if ([self.earthquakeList count] >= 100){
+		NSLog(@"count = 100");
+		[rootViewController.tableView reloadData];
+		[detailViewController loadAllEarthQuakes:earthquakeList];
+	}
 }
 
 
 #pragma mark Parser constants
 
-static const const NSUInteger kMaximumNumberOfEarthquakesToParse = 50;
+static const const NSUInteger kMaximumNumberOfEarthquakesToParse = 100;
 
 static NSUInteger const kSizeOfEarthquakeBatch = 10;
 

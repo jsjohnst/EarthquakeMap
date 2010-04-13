@@ -2,7 +2,7 @@
 #import "RootViewController.h"
 #import "Earthquake.h"
 #import "EarthquakeLocationAnnotation.h"
-#import "EarthquakeLocation.h"
+#import "EarthquakeLocationAnnotationView.h"
 
 @interface DetailViewController ()
 
@@ -22,13 +22,10 @@
 - (void) loadAllEarthQuakes:(NSArray *) earthquakeList {
 
 	for (Earthquake *earthquake in earthquakeList) {
-	
 		
-		EarthquakeLocation *earthquakeLocation = [[[EarthquakeLocation alloc] initWithLatitude:earthquake.latitude andLongitude:earthquake.longitude] autorelease];
-		
-	    EarthquakeLocationAnnotation *earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: earthquakeLocation.location] autorelease];
-		[earthquakeAnnotation setMTitle:detailItem.location];
-		[earthquakeAnnotation setMSubTitle:[NSString stringWithFormat:@"%.1f", detailItem.magnitude]];
+	    EarthquakeLocationAnnotation *earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: [earthquake getCoordinates]] autorelease];
+		[earthquakeAnnotation setTitle:earthquake.location];
+		[earthquakeAnnotation setSubtitle:[NSString stringWithFormat:@"%.1f", earthquake.magnitude]];
 		
 		[mapView addAnnotation:earthquakeAnnotation];
 	}
@@ -52,20 +49,30 @@
     }        
 }
 
+- (MKAnnotationView *)mapView:(MKMapView *)mV viewForAnnotation:(id )annotation {
+	
+	NSString *annotationViewIdentifier = @"EQAnnotationView";
+	
+	EarthquakeLocationAnnotationView *earthquakeLocationAnnotationView = nil;
+	
+	earthquakeLocationAnnotationView = (EarthquakeLocationAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
+	
+	if ( earthquakeLocationAnnotationView == nil ) {
+		earthquakeLocationAnnotationView = [[[EarthquakeLocationAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier] autorelease];
+	}
+	
+	return earthquakeLocationAnnotationView;
 
--(CLLocationCoordinate2D) earthquakeLocation {
-	
-    CLLocationCoordinate2D location;
-    location.latitude = detailItem.latitude;
-    location.longitude = detailItem.longitude;
-	
-    return location;
 }
+
 
 - (void)configureView {
 	
-	// remove all previous annotations. 
-	[mapView removeAnnotations:mapView.annotations];
+	// remove all previous annotations. TODO: Fix the removal of annotations. 
+	
+//	if (mapView.annotations != nil) {	
+//		[mapView removeAnnotations:mapView.annotations];
+//	}
 
 	MKCoordinateRegion region;
 	MKCoordinateSpan span;
@@ -73,22 +80,17 @@
 	span.latitudeDelta=0.5;
 	span.longitudeDelta=0.5;
 
-	EarthquakeLocation *earthquakeLocation = [[[EarthquakeLocation alloc] initWithLatitude:detailItem.latitude andLongitude:detailItem.longitude] autorelease];
-	
 	region.span = span;
-	region.center = earthquakeLocation.location;
+	region.center = [detailItem getCoordinates];
 	
-	EarthquakeLocationAnnotation *earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: earthquakeLocation.location] autorelease];
-	[earthquakeAnnotation setMTitle:detailItem.location];
-	[earthquakeAnnotation setMSubTitle:[NSString stringWithFormat:@"%.1f", detailItem.magnitude]];
+	EarthquakeLocationAnnotation *earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: [detailItem getCoordinates]] autorelease];
+	[earthquakeAnnotation setTitle:detailItem.location];
+	[earthquakeAnnotation setSubtitle:[NSString stringWithFormat:@"%.1f", detailItem.magnitude]];
 	
 	[mapView addAnnotation:earthquakeAnnotation];
 	[mapView setRegion:region animated:TRUE];
 	[mapView regionThatFits:region];
 }
-
-
-
 
 #pragma mark -
 #pragma mark Split view support
@@ -129,9 +131,13 @@
 
 
  // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-// - (void)viewDidLoad {
-//	 [super viewDidLoad];
-// }
+ - (void)viewDidLoad {
+	 [super viewDidLoad];
+	 [mapView setMapType:MKMapTypeStandard];
+	 [mapView setZoomEnabled:YES];
+	 [mapView setScrollEnabled:YES];
+	 [mapView setDelegate:self];
+ }
 
 - (void)viewDidUnload {
     // Release any retained subviews of the main view.
@@ -157,6 +163,7 @@
     [toolbar release];
     [detailItem release];	
 	[mapView release];
+	[EarthquakeLocationAnnotationView release];
 	
     [super dealloc];
 }
