@@ -13,6 +13,7 @@
 	
 }
 
+@property (nonatomic, retain) IBOutlet MKMapView *mapView;
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
 @property (nonatomic, retain) Earthquake *detailItem;
 

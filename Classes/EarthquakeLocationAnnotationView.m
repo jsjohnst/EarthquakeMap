@@ -7,16 +7,22 @@
 	
 	MKPinAnnotationView *pinView = nil;
 	
-//	pinView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
-	
 	if ( pinView == nil ) {
-		pinView = [[[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseIdentifier] autorelease];
+		pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
+	} else {
+		pinView = annotation;
 	}
+
 	
 	pinView.pinColor = MKPinAnnotationColorPurple;
 	pinView.canShowCallout = YES;
-	
+
     return pinView;
+}
+
+- (void) dealloc {
+	[self release];
+	[super dealloc];
 }
 
 @end

@@ -14,7 +14,7 @@
 
 @implementation DetailViewController
 
-@synthesize toolbar, popoverController, detailItem;
+@synthesize toolbar, popoverController, detailItem, mapView;
 
 #pragma mark -
 #pragma mark Managing the detail item
@@ -49,20 +49,22 @@
     }        
 }
 
-- (MKAnnotationView *)mapView:(MKMapView *)mV viewForAnnotation:(id )annotation {
+- (MKAnnotationView *) mapView:(MKMapView *)mapView viewForAnnotation:(id )annotation {
 	
 	NSString *annotationViewIdentifier = @"EQAnnotationView";
 	
 	EarthquakeLocationAnnotationView *earthquakeLocationAnnotationView = nil;
 	
-	earthquakeLocationAnnotationView = (EarthquakeLocationAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
+	earthquakeLocationAnnotationView = (EarthquakeLocationAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
 	
 	if ( earthquakeLocationAnnotationView == nil ) {
 		earthquakeLocationAnnotationView = [[[EarthquakeLocationAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier] autorelease];
+	} else {
+		earthquakeLocationAnnotationView.annotation = annotation;
 	}
+
 	
 	return earthquakeLocationAnnotationView;
-
 }
 
 
@@ -70,9 +72,9 @@
 	
 	// remove all previous annotations. TODO: Fix the removal of annotations. 
 	
-//	if (mapView.annotations != nil) {	
-//		[mapView removeAnnotations:mapView.annotations];
-//	}
+	if ([self.mapView.annotations count] > 0) {	
+		[self.mapView removeAnnotations:self.mapView.annotations];
+	}
 
 	MKCoordinateRegion region;
 	MKCoordinateSpan span;
@@ -161,6 +163,7 @@
 - (void)dealloc {
     [popoverController release];
     [toolbar release];
+	[mapView release];
     [detailItem release];	
 	[mapView release];
 	[EarthquakeLocationAnnotationView release];
