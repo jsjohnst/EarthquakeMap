@@ -2,7 +2,8 @@
 #import "RootViewController.h"
 #import "Earthquake.h"
 #import "EarthquakeLocationAnnotation.h"
-#import "EarthquakeLocationAnnotationView.h"
+#import "AllEarthquakeLocationAnnotationView.h"
+#import "DetailEarkquakeLocationAnnotationView.h"
 
 @interface DetailViewController ()
 
@@ -14,7 +15,7 @@
 
 @implementation DetailViewController
 
-@synthesize toolbar, popoverController, detailItem, mapView;
+@synthesize toolbar, popoverController, detailItem, mapView, earthquakeLocationAnnotationView;
 
 #pragma mark -
 #pragma mark Managing the detail item
@@ -53,18 +54,36 @@
 	
 	NSString *annotationViewIdentifier = @"EQAnnotationView";
 	
-	EarthquakeLocationAnnotationView *earthquakeLocationAnnotationView = nil;
+	earthquakeLocationAnnotationView = (MKAnnotationView <EarthquakeLocationAnnotationView> *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
 	
-	earthquakeLocationAnnotationView = (EarthquakeLocationAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
-	
-	if ( earthquakeLocationAnnotationView == nil ) {
-		earthquakeLocationAnnotationView = [[[EarthquakeLocationAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier] autorelease];
-	} else {
-		earthquakeLocationAnnotationView.annotation = annotation;
-	}
+	if (detailItem == nil) {
+		
+		if ( earthquakeLocationAnnotationView == nil ) {
+			earthquakeLocationAnnotationView = [[[AllEarthquakeLocationAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier] autorelease];
+		} else {
+			earthquakeLocationAnnotationView.annotation = annotation;
+		}
+		
+		[earthquakeLocationAnnotationView setEnabled:YES];
 
+		
+	} else {
+		
+		if ( earthquakeLocationAnnotationView == nil ) {
+			earthquakeLocationAnnotationView = [[[DetailEarkquakeLocationAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier] autorelease];
+		} else {
+			earthquakeLocationAnnotationView = nil;
+			earthquakeLocationAnnotationView = (DetailEarkquakeLocationAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
+			earthquakeLocationAnnotationView = [[[DetailEarkquakeLocationAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier] autorelease];
+			NSLog(@"reused");
+		}
+		
+		[earthquakeLocationAnnotationView setEnabled:YES];
+		
+	}		
 	
 	return earthquakeLocationAnnotationView;
+	
 }
 
 
@@ -166,8 +185,7 @@
 	[mapView release];
     [detailItem release];	
 	[mapView release];
-	[EarthquakeLocationAnnotationView release];
-	
+	[earthquakeLocationAnnotationView release];
     [super dealloc];
 }
 

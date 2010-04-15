@@ -3,26 +3,33 @@
 
 @implementation EarthquakeLocationAnnotationView
 
-- (id)initWithAnnotation:(id )annotation reuseIdentifier:(NSString *)reuseIdentifier {
-	
-	MKPinAnnotationView *pinView = nil;
-	
-	if ( pinView == nil ) {
-		pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
-	} else {
-		pinView = annotation;
-	}
-
-	
-	pinView.pinColor = MKPinAnnotationColorPurple;
-	pinView.canShowCallout = YES;
-
-    return pinView;
-}
-
-- (void) dealloc {
-	[self release];
-	[super dealloc];
-}
+//@synthesize detailView;
+//@synthesize allEarthquakeLocationAnnotationView;
+//@synthesize detailEarthquakeLocationAnnotationView;
+//
+//
+//- (id) initWithDetailView: (BOOL) isItDetailView {
+//	self.detailView = isItDetailView;
+//	
+//	return self;
+//}
+//
+//- (id) getView {
+//	
+//	if (self.detailView) {
+//		NSLog(@"it is DetailView!");
+//	} else {
+//		NSLog(@"It is not detail view!");
+//	}
+//	
+//	return self;
+//
+//} 
+//
+//- (void) dealloc {
+//	[allEarthquakeLocationAnnotationView release];
+//	[detailEarthquakeLocationAnnotationView release];
+//	[super dealloc];
+//}
 
 @end
