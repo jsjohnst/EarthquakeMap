@@ -64,9 +64,6 @@
 			earthquakeLocationAnnotationView.annotation = annotation;
 		}
 		
-		[earthquakeLocationAnnotationView setEnabled:YES];
-
-		
 	} else {
 		
 		if ( earthquakeLocationAnnotationView == nil ) {
@@ -75,12 +72,10 @@
 			earthquakeLocationAnnotationView = nil;
 			earthquakeLocationAnnotationView = (DetailEarkquakeLocationAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
 			earthquakeLocationAnnotationView = [[[DetailEarkquakeLocationAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier] autorelease];
-			NSLog(@"reused");
 		}
-		
-		[earthquakeLocationAnnotationView setEnabled:YES];
-		
-	}		
+	}	
+	
+	[earthquakeLocationAnnotationView setEnabled:YES];
 	
 	return earthquakeLocationAnnotationView;
 	
@@ -89,7 +84,7 @@
 
 - (void)configureView {
 	
-	// remove all previous annotations. TODO: Fix the removal of annotations. 
+	// remove all previous annotations.
 	
 	if ([self.mapView.annotations count] > 0) {	
 		[self.mapView removeAnnotations:self.mapView.annotations];
@@ -170,14 +165,11 @@
 #pragma mark -
 #pragma mark Memory management
 
-/*
- - (void)didReceiveMemoryWarning {
- // Releases the view if it doesn't have a superview.
- [super didReceiveMemoryWarning];
- 
- // Release any cached data, images, etc that aren't in use.
- }
- */
+- (void)didReceiveMemoryWarning {
+// Releases the view if it doesn't have a superview.
+	[super didReceiveMemoryWarning];
+
+}
 
 - (void)dealloc {
     [popoverController release];

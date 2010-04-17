@@ -103,7 +103,6 @@
 - (void)addEarthquakesToList:(NSArray *)earthquakes {
     [self.earthquakeList addObjectsFromArray:earthquakes];
 	if ([self.earthquakeList count] >= 100){
-		NSLog(@"count = 100");
 		[rootViewController.tableView reloadData];
 		[detailViewController loadAllEarthQuakes:earthquakeList];
 	}

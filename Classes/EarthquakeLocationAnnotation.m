@@ -9,7 +9,6 @@
 
 -(id) initWithCoordinate:(CLLocationCoordinate2D) c{
 	coordinate = c;
-	//NSLog(@"%f%f", c.latitude, c.longitude);
 	return self;
 }
 

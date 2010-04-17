@@ -22,7 +22,6 @@
 		C9A6B47611715378000CFEAB /* Earthquake.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A6B47511715378000CFEAB /* Earthquake.m */; };
 		C9A6B48F11715D5F000CFEAB /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A6B48E11715D5F000CFEAB /* CFNetwork.framework */; };
 		C9D01AC2117442CA00304898 /* AllEarthquakeLocationAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D01AC1117442CA00304898 /* AllEarthquakeLocationAnnotationView.m */; };
-		C9FF472811768BBE00811B87 /* EarthquakeLocationAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF472711768BBE00811B87 /* EarthquakeLocationAnnotationView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,7 +51,6 @@
 		C9D01AC0117442CA00304898 /* AllEarthquakeLocationAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllEarthquakeLocationAnnotationView.h; sourceTree = "<group>"; };
 		C9D01AC1117442CA00304898 /* AllEarthquakeLocationAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AllEarthquakeLocationAnnotationView.m; sourceTree = "<group>"; };
 		C9FF472611768BBE00811B87 /* EarthquakeLocationAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EarthquakeLocationAnnotationView.h; sourceTree = "<group>"; };
-		C9FF472711768BBE00811B87 /* EarthquakeLocationAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EarthquakeLocationAnnotationView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,7 +87,6 @@
 				C97068F1117682B300F92532 /* DetailEarkquakeLocationAnnotationView.h */,
 				C97068F2117682B300F92532 /* DetailEarkquakeLocationAnnotationView.m */,
 				C9FF472611768BBE00811B87 /* EarthquakeLocationAnnotationView.h */,
-				C9FF472711768BBE00811B87 /* EarthquakeLocationAnnotationView.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -214,7 +211,6 @@
 				C93624421171A656004CD7D9 /* EarthquakeLocationAnnotation.m in Sources */,
 				C9D01AC2117442CA00304898 /* AllEarthquakeLocationAnnotationView.m in Sources */,
 				C97068F3117682B300F92532 /* DetailEarkquakeLocationAnnotationView.m in Sources */,
-				C9FF472811768BBE00811B87 /* EarthquakeLocationAnnotationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

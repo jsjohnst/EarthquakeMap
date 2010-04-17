@@ -16,6 +16,7 @@
 	
 	pinView.pinColor = MKPinAnnotationColorPurple;
 	pinView.canShowCallout = YES;
+	pinView.animatesDrop = NO;
 	
 	return pinView;
 }
