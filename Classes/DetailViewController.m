@@ -11,11 +11,9 @@
 - (void)configureView;
 @end
 
-
-
 @implementation DetailViewController
 
-@synthesize toolbar, popoverController, detailItem, mapView, earthquakeLocationAnnotationView;
+@synthesize toolbar, popoverController, detailItem, mapView, earthquakeLocationAnnotationView, locateMeButton;
 
 #pragma mark -
 #pragma mark Managing the detail item
@@ -108,14 +106,68 @@
 	[mapView regionThatFits:region];
 }
 
+
+- (void) startLocation: (id) sender{
+	
+	NSMutableArray *items = [[toolbar items] mutableCopy];
+	
+	UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    [activityIndicator startAnimating];
+
+	UIBarButtonItem *activityItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
+
+
+    locateMeButton = nil;
+
+	locateMeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"black.png"] style:UIBarButtonItemStyleDone target:self action:@selector(stopLocation:)];
+			
+	[items removeObjectAtIndex:2];
+	[items insertObject:activityItem atIndex:2];
+	[items insertObject:locateMeButton atIndex:3];
+	
+	[toolbar setItems:items animated:YES];
+	
+	[items release];
+	[activityIndicator release];
+    [activityItem release];
+	
+	NSLog(@"start");
+}
+
+- (void) stopLocation: (id) sender {
+	
+	NSMutableArray *items = [[toolbar items] mutableCopy];
+	
+	[items removeObjectAtIndex:3];
+	[items removeObjectAtIndex:2];
+	
+	locateMeButton = nil;
+	
+	locateMeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"black.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(startLocation:)];
+	
+	[items insertObject:locateMeButton atIndex:2];
+	[toolbar setItems:items animated:YES];
+	
+	[items release];
+	
+	NSLog(@"stop");
+	
+}
+	
 #pragma mark -
 #pragma mark Split view support
 
 - (void)splitViewController: (UISplitViewController*)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem*)barButtonItem forPopoverController: (UIPopoverController*)pc {
     
     barButtonItem.title = @"Earthquake List";
+
+	locateMeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"black.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(startLocation:)];
+	UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+	
     NSMutableArray *items = [[toolbar items] mutableCopy];
     [items insertObject:barButtonItem atIndex:0];
+	[items insertObject:flexItem atIndex:1];
+	[items insertObject:locateMeButton atIndex:2];
     [toolbar setItems:items animated:YES];
     [items release];
     self.popoverController = pc;
@@ -126,7 +178,7 @@
 - (void)splitViewController: (UISplitViewController*)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem {
     
     NSMutableArray *items = [[toolbar items] mutableCopy];
-    [items removeObjectAtIndex:0];
+	[items removeAllObjects];
     [toolbar setItems:items animated:YES];
     [items release];
     self.popoverController = nil;
@@ -152,6 +204,7 @@
 	 [mapView setMapType:MKMapTypeStandard];
 	 [mapView setZoomEnabled:YES];
 	 [mapView setScrollEnabled:YES];
+	 [mapView sizeToFit];
 	 [mapView setDelegate:self];
  }
 
