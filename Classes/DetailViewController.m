@@ -13,22 +13,21 @@
 
 @implementation DetailViewController
 
-@synthesize toolbar, popoverController, detailItem, mapView, earthquakeLocationAnnotationView, locateMeButton;
+@synthesize toolbar, popoverController, detailItem, mapView, locateMeButton, activityIndicator, locationManager;
 
 #pragma mark -
 #pragma mark Managing the detail item
 
 - (void) loadAllEarthQuakes:(NSArray *) earthquakeList {
-
+	
 	for (Earthquake *earthquake in earthquakeList) {
-		
+	
 	    EarthquakeLocationAnnotation *earthquakeAnnotation = [[[EarthquakeLocationAnnotation alloc] initWithCoordinate: [earthquake getCoordinates]] autorelease];
 		[earthquakeAnnotation setTitle:earthquake.location];
 		[earthquakeAnnotation setSubtitle:[NSString stringWithFormat:@"%.1f", earthquake.magnitude]];
 		
 		[mapView addAnnotation:earthquakeAnnotation];
 	}
-	
 }
 
 /*
@@ -50,6 +49,8 @@
 
 - (MKAnnotationView *) mapView:(MKMapView *)mapView viewForAnnotation:(id )annotation {
 	
+	MKAnnotationView <EarthquakeLocationAnnotationView> *earthquakeLocationAnnotationView;
+	
 	NSString *annotationViewIdentifier = @"EQAnnotationView";
 	
 	earthquakeLocationAnnotationView = (MKAnnotationView <EarthquakeLocationAnnotationView> *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
@@ -63,20 +64,53 @@
 		}
 		
 	} else {
-		
-		if ( earthquakeLocationAnnotationView == nil ) {
-			earthquakeLocationAnnotationView = [[[DetailEarkquakeLocationAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier] autorelease];
-		} else {
-			earthquakeLocationAnnotationView = nil;
-			earthquakeLocationAnnotationView = (DetailEarkquakeLocationAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationViewIdentifier];
-			earthquakeLocationAnnotationView = [[[DetailEarkquakeLocationAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier] autorelease];
-		}
+		earthquakeLocationAnnotationView = [[DetailEarkquakeLocationAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationViewIdentifier];
 	}	
 	
 	[earthquakeLocationAnnotationView setEnabled:YES];
 	
 	return earthquakeLocationAnnotationView;
 	
+}
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	if (self.mapView.userLocation.location) {
+		NSLog(@"Inside the if");
+		static CFAbsoluteTime lastTime = 0.0;
+		CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
+		MKCoordinateSpan span;
+		MKCoordinateRegion region;
+		
+		span.latitudeDelta = 5;
+		span.longitudeDelta = 5;
+		
+		region.span = span;
+		
+		if((now - lastTime) > 15.0) { // 15 seconds
+			static CLLocation *oldLocation = nil;
+			if (oldLocation == nil) {
+				NSLog(@"Inside the if 2");
+				oldLocation = [[CLLocation alloc] initWithLatitude:self.mapView.userLocation.location.coordinate.latitude longitude:self.mapView.userLocation.location.coordinate.longitude];
+				region.center = oldLocation.coordinate;
+				[mapView setRegion:region animated:TRUE];
+				[mapView regionThatFits:region];
+				
+			} else {
+				NSLog(@"Inside the if 3");
+			    CLLocation *newLocation = [[CLLocation alloc] initWithLatitude:self.mapView.userLocation.location.coordinate.latitude longitude:self.mapView.userLocation.location.coordinate.longitude];
+			    CLLocationDistance distance = [newLocation getDistanceFrom:oldLocation];
+				
+			    lastTime = now;
+			    NSString *test = [[NSString alloc] initWithFormat:@"CHANGE! Lat: %g°, Lon: %g°, Distanz: %gm", mapView.userLocation.location.coordinate.latitude, mapView.userLocation.location.coordinate.longitude, distance];
+			    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Observer" message:test delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+			    [alert show];[alert release];[test release];
+			    oldLocation = newLocation;
+				region.center = newLocation.coordinate;
+				[mapView setRegion:region animated:TRUE];
+				[mapView regionThatFits:region];
+			}
+		}
+    }
 }
 
 
@@ -106,12 +140,27 @@
 	[mapView regionThatFits:region];
 }
 
+- (void) zoomToUserLocation {
+	MKCoordinateRegion region;
+	region.center = self.locationManager.location.coordinate;
+	
+	MKCoordinateSpan span;
+	
+	span.latitudeDelta = 5;
+	span.longitudeDelta = 5;
+	
+	region.span = span;
+	
+	[mapView setRegion:region animated:YES];
+	
+}
+
 
 - (void) startLocation: (id) sender{
 	
 	NSMutableArray *items = [[toolbar items] mutableCopy];
 	
-	UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+	activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
     [activityIndicator startAnimating];
 
 	UIBarButtonItem *activityItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
@@ -126,6 +175,18 @@
 	[items insertObject:locateMeButton atIndex:3];
 	
 	[toolbar setItems:items animated:YES];
+
+	self.locationManager = [[CLLocationManager alloc] init];
+	self.locationManager.delegate = self;
+	self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+	self.locationManager.distanceFilter = 10;
+	[self.locationManager startUpdatingLocation];
+	
+	[self.mapView.userLocation addObserver:self forKeyPath:@"location" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:NULL];
+	
+	self.mapView.showsUserLocation = YES;
+	
+	//[mapView setShowsUserLocation:YES];
 	
 	[items release];
 	[activityIndicator release];
@@ -136,6 +197,7 @@
 
 - (void) stopLocation: (id) sender {
 	
+	[activityIndicator stopAnimating];
 	NSMutableArray *items = [[toolbar items] mutableCopy];
 	
 	[items removeObjectAtIndex:3];
@@ -147,6 +209,8 @@
 	
 	[items insertObject:locateMeButton atIndex:2];
 	[toolbar setItems:items animated:YES];
+	
+	[mapView setShowsUserLocation:NO];
 	
 	[items release];
 	
@@ -170,6 +234,7 @@
 	[items insertObject:locateMeButton atIndex:2];
     [toolbar setItems:items animated:YES];
     [items release];
+	[flexItem release];
     self.popoverController = pc;
 }
 
@@ -206,6 +271,7 @@
 	 [mapView setScrollEnabled:YES];
 	 [mapView sizeToFit];
 	 [mapView setDelegate:self];
+	 
  }
 
 - (void)viewDidUnload {
@@ -230,7 +296,6 @@
 	[mapView release];
     [detailItem release];	
 	[mapView release];
-	[earthquakeLocationAnnotationView release];
     [super dealloc];
 }
 
